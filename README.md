@@ -21,6 +21,24 @@ Exports plugins as dynamic plugin archives. This should be run **after** the `ov
 - Exports plugins as dynamic plugin packages
 - Handles both frontend and backend plugins
 - Optional container image packaging
+- Verifies registry artifacts before skipping an unchanged workspace (requires `skopeo`)
+
+**Environment requirements:**
+
+When `last-publish-commit` is provided together with `image-repository-prefix`, the action uses
+`skopeo` to verify that all expected container images exist in the registry with valid dynamic
+package metadata before deciding to skip an unchanged workspace. If `skopeo` is not available in
+that situation, the script fails with an error rather than silently skipping verification.
+
+`skopeo` is **pre-installed** in both known production environments:
+
+| Environment | Tool availability |
+|---|---|
+| GitHub Actions `ubuntu-latest` (Ubuntu 24.04) | `skopeo` 1.13+ included by default |
+| RHDH Konflux builder image (`builder.Containerfile`) | `skopeo` installed via `dnf` |
+
+If you invoke `export-dynamic.sh` directly in another environment and intend to use the
+workspace-skip path with container publishing, install `skopeo` before running the script.
 
 ### override-sources
 
